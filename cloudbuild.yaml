@@ -1,5 +1,6 @@
 # This Cloud Build pipeline automatically deploys Airflow DAGs to a Google Cloud Composer environment.
-
+options:
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
 steps:
   # Step 1: Find the correct GCS bucket for the Composer environment's DAGs folder.
   # The `gcloud composer environments describe` command can extract the bucket path.
