@@ -1,4 +1,39 @@
-steps:
-  - name: 'gcr.io/cloud-builders/gsutil'
-    args: ['-m', 'cp', '-r', '.', 'gs://my-code-bucket-airbnb/airflow-DAGs/']
+# This Cloud Build pipeline automatically deploys Airflow DAGs to a Google Cloud Composer environment.
 
+steps:
+  # Step 1: Find the correct GCS bucket for the Composer environment's DAGs folder.
+  # The `gcloud composer environments describe` command can extract the bucket path.
+  # We write this path to a file in the shared /workspace for the next step to use.
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'Find Composer DAGs Bucket'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud composer environments describe ${_COMPOSER_ENV_NAME} \
+          --location ${_COMPOSER_LOCATION} \
+          --format="value(config.dagGcsPrefix)" > /workspace/dags_path.txt
+        echo "Found DAGs folder: $(cat /workspace/dags_path.txt)"
+
+  # Step 2: Use gsutil rsync to sync the local 'dags' folder with the Composer DAGs bucket.
+  # 'rsync' is better than 'cp' because it only copies changed files and can delete
+  # files from the destination that are no longer in the source (-d flag).
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'Sync DAGs to GCS'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        # Ensure the dags directory exists in the repository to prevent errors
+        if [ -d "dags" ]; then
+          echo "Syncing local 'dags/' directory to Composer..."
+          gsutil rsync -d -r dags/ "$(cat /workspace/dags_path.txt)"
+        else
+          echo "No 'dags' directory found in the repository. Nothing to sync."
+        fi
+
+# Substitution variables that will be configured in the Cloud Build Trigger.
+# This makes the pipeline reusable for different environments.
+substitutions:
+  _COMPOSER_ENV_NAME: 'your-composer-environment-name' # Default value, will be overridden by Trigger
+  _COMPOSER_LOCATION: 'your-composer-region'        # Default value, will be overridden by Trigger
