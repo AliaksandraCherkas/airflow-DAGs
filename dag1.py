@@ -15,7 +15,7 @@ REGION = 'us-central1'
 GCS_BUCKET = 'my-code-bucket-airbnb'
 SERVICE_ACCOUNT = "dataproc-service-acc@airbnb-465211.iam.gserviceaccount.com"
 
-my-code-bucket-airbnb/dataproc-jobs/airbnb_processed.py
+
 # Using Jinja templating for a unique cluster name per run to ensure idempotency.
 CLUSTER_NAME = 'cluster-airbnb-dag'
 
@@ -60,7 +60,7 @@ default_args = {
 }
 
 with DAG(
-    'dataproc_pyspark_orchestration1',
+    'dataproc_pyspark_orchestration',
     default_args=default_args,
     schedule_interval=None,
     catchup=False,
