@@ -1,7 +1,4 @@
 steps:
   - name: 'gcr.io/cloud-builders/gsutil'
-<<<<<<< HEAD
-    args: ['-m', 'cp', '-r', 'dags/*', 'gs://my-code-bucket-airbnb/']
-=======
     args: ['-m', 'cp', '-r', '.', 'gs://my-code-bucket-airbnb/airflow-DAGs/']
->>>>>>> 1df8683 (add dags folder)
+
