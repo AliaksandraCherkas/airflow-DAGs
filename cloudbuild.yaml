@@ -6,4 +6,5 @@ steps:
     args: ['-m', 'cp', '-r', '.', 'gs://my-code-bucket-airbnb/airflow-DAGs/']
 
   - name: 'gcr.io/cloud-builders/gsutil'
-    args: ['-m', 'cp', '-r', '.', 'gs://us-central1-airbnb-composer-c2099891-bucket/dags/']
+    args: ['cp', '*.py',  'gs://us-central1-airbnb-composer-c2099891-bucket/dags/']
+
