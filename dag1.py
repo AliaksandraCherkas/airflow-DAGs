@@ -20,7 +20,7 @@ PYSPARK_URI_2 = f'gs://{GCS_BUCKET}/dataproc-jobs/airbnb_processed.py'
 CLUSTER_CONFIG = {
     "master_config": {
         "num_instances": 1,
-        "machine_type_uri": "n2-standard-2",
+        "machine_type_uri": "n1-standard-2",
         "disk_config": {"boot_disk_size_gb": 100},
     },
     "worker_config": {
